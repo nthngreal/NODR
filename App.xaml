@@ -1,0 +1,5 @@
+<Application x:Class="NODR.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Intentionally empty: resources are loaded inside guarded startup so XAML failures are logged. -->
+</Application>

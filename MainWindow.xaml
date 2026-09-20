@@ -1,0 +1,711 @@
+﻿<Window x:Class="NODR.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:NODR.Controls"
+        xmlns:services="clr-namespace:NODR.Services"
+        Title="NODR" Icon="pack://application:,,,/Assets/NODR.ico" Width="880" Height="680" MinWidth="820" MinHeight="620"
+        WindowStartupLocation="CenterScreen">
+    <Grid Background="{DynamicResource AppBackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="54"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="AppContent" Grid.RowSpan="2">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsDialogOpen}" Value="True">
+                            <Setter Property="Effect"><Setter.Value><BlurEffect Radius="4"/></Setter.Value></Setter>
+                            <Setter Property="IsHitTestVisible" Value="False"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsUninstallerResidualOpen}" Value="True">
+                            <Setter Property="Effect"><Setter.Value><BlurEffect Radius="4"/></Setter.Value></Setter>
+                            <Setter Property="IsHitTestVisible" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="54"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="{DynamicResource SidebarBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1">
+            <Grid Margin="18,0" VerticalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
+                    <Image Source="pack://application:,,,/Assets/NODR-logo.png" Width="27" Height="27" Margin="0,0,8,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <Image Height="21" Width="91" Stretch="Uniform" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Setter Property="Source" Value="pack://application:,,,/Assets/NODR-wordmark-dark.png"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding EffectiveThemeIsDark}" Value="False">
+                                        <Setter Property="Source" Value="pack://application:,,,/Assets/NODR-wordmark-light.png"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+                </StackPanel>
+                <Border Grid.Column="1" Background="{DynamicResource SurfaceBrush}" CornerRadius="11" Padding="3" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="{services:Loc Nav.Overview}" Command="{Binding ShowOverviewCommand}" Margin="0">
+                            <Button.Style><Style TargetType="Button" BasedOn="{StaticResource TopNavButton}"><Style.Triggers><DataTrigger Binding="{Binding IsOverviewSelected}" Value="True"><Setter Property="Background" Value="{DynamicResource AccentSoftBrush}"/><Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/><Setter Property="FontWeight" Value="SemiBold"/></DataTrigger></Style.Triggers></Style></Button.Style>
+                        </Button>
+                        <Button Content="{services:Loc Nav.Cleanup}" Command="{Binding ShowCleanupCommand}" Margin="2,0">
+                            <Button.Style><Style TargetType="Button" BasedOn="{StaticResource TopNavButton}"><Style.Triggers><DataTrigger Binding="{Binding IsCleanupSelected}" Value="True"><Setter Property="Background" Value="{DynamicResource AccentSoftBrush}"/><Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/><Setter Property="FontWeight" Value="SemiBold"/></DataTrigger></Style.Triggers></Style></Button.Style>
+                        </Button>
+                        <Button Content="{services:Loc Nav.Files}" Command="{Binding ShowFilesCommand}" Margin="0">
+                            <Button.Style><Style TargetType="Button" BasedOn="{StaticResource TopNavButton}"><Style.Triggers><DataTrigger Binding="{Binding IsFilesSelected}" Value="True"><Setter Property="Background" Value="{DynamicResource AccentSoftBrush}"/><Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/><Setter Property="FontWeight" Value="SemiBold"/></DataTrigger></Style.Triggers></Style></Button.Style>
+                        </Button>
+                        <Button Content="{services:Loc Nav.Uninstaller}" Command="{Binding ShowUninstallerCommand}" Margin="2,0,0,0">
+                            <Button.Style><Style TargetType="Button" BasedOn="{StaticResource TopNavButton}"><Style.Triggers><DataTrigger Binding="{Binding IsUninstallerSelected}" Value="True"><Setter Property="Background" Value="{DynamicResource AccentSoftBrush}"/><Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/><Setter Property="FontWeight" Value="SemiBold"/></DataTrigger></Style.Triggers></Style></Button.Style>
+                        </Button>
+                    </StackPanel>
+                </Border>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Button x:Name="LanguageMenuButton" Style="{StaticResource CompactImageButton}" Margin="0,0,6,0" ToolTip="{services:Loc Header.LanguageTooltip}" Click="OnLanguageMenuClick">
+                        <Image Width="21" Height="21" RenderOptions.BitmapScalingMode="HighQuality">
+                            <Image.Style><Style TargetType="Image"><Setter Property="Source" Value="pack://application:,,,/Assets/Ui/lang-en.png"/><Style.Triggers><DataTrigger Binding="{Binding CurrentLanguageCode}" Value="uk"><Setter Property="Source" Value="pack://application:,,,/Assets/Ui/lang-ua.png"/></DataTrigger><DataTrigger Binding="{Binding CurrentLanguageCode}" Value="ru"><Setter Property="Source" Value="pack://application:,,,/Assets/Ui/lang-ru.png"/></DataTrigger></Style.Triggers></Style></Image.Style>
+                        </Image>
+                    </Button>
+                    <Popup x:Name="LanguagePopup" PlacementTarget="{Binding ElementName=LanguageMenuButton}" Placement="Bottom" HorizontalOffset="-118" VerticalOffset="5" StaysOpen="False" AllowsTransparency="True" PopupAnimation="Fade">
+                        <Border Style="{StaticResource NodrPopupPanel}" Width="160">
+                            <StackPanel>
+                                <Button Tag="en" Style="{StaticResource NodrPopupButton}" Click="OnLanguagePopupItemClick"><StackPanel Orientation="Horizontal"><Image Source="pack://application:,,,/Assets/Ui/lang-en.png" Width="20" Height="20" Margin="0,0,9,0"/><TextBlock Text="English" VerticalAlignment="Center"/></StackPanel></Button>
+                                <Button Tag="uk" Style="{StaticResource NodrPopupButton}" Click="OnLanguagePopupItemClick"><StackPanel Orientation="Horizontal"><Image Source="pack://application:,,,/Assets/Ui/lang-ua.png" Width="20" Height="20" Margin="0,0,9,0"/><TextBlock Text="Українська" VerticalAlignment="Center"/></StackPanel></Button>
+                                <Button Tag="ru" Style="{StaticResource NodrPopupButton}" Click="OnLanguagePopupItemClick"><StackPanel Orientation="Horizontal"><Image Source="pack://application:,,,/Assets/Ui/lang-ru.png" Width="20" Height="20" Margin="0,0,9,0"/><TextBlock Text="Русский" VerticalAlignment="Center"/></StackPanel></Button>
+                            </StackPanel>
+                        </Border>
+                    </Popup>
+                    <Button x:Name="ThemeMenuButton" Style="{StaticResource CompactImageButton}" ToolTip="{services:Loc Header.ThemeTooltip}" Click="OnThemeMenuClick">
+                        <Image Width="21" Height="21" RenderOptions.BitmapScalingMode="HighQuality">
+                            <Image.Style><Style TargetType="Image"><Setter Property="Source" Value="pack://application:,,,/Assets/Ui/theme-system.png"/><Style.Triggers><DataTrigger Binding="{Binding CurrentThemeMode}" Value="Dark"><Setter Property="Source" Value="pack://application:,,,/Assets/Ui/theme-dark.png"/></DataTrigger><DataTrigger Binding="{Binding CurrentThemeMode}" Value="Light"><Setter Property="Source" Value="pack://application:,,,/Assets/Ui/theme-light.png"/></DataTrigger></Style.Triggers></Style></Image.Style>
+                        </Image>
+                    </Button>
+                    <Popup x:Name="ThemePopup" PlacementTarget="{Binding ElementName=ThemeMenuButton}" Placement="Bottom" HorizontalOffset="-118" VerticalOffset="5" StaysOpen="False" AllowsTransparency="True" PopupAnimation="Fade">
+                        <Border Style="{StaticResource NodrPopupPanel}" Width="160">
+                            <StackPanel>
+                                <Button Tag="System" Style="{StaticResource NodrPopupButton}" Click="OnThemePopupItemClick"><StackPanel Orientation="Horizontal"><Image Source="pack://application:,,,/Assets/Ui/theme-system.png" Width="20" Height="20" Margin="0,0,9,0"/><TextBlock Text="System" VerticalAlignment="Center"/></StackPanel></Button>
+                                <Button Tag="Dark" Style="{StaticResource NodrPopupButton}" Click="OnThemePopupItemClick"><StackPanel Orientation="Horizontal"><Image Source="pack://application:,,,/Assets/Ui/theme-dark.png" Width="20" Height="20" Margin="0,0,9,0"/><TextBlock Text="Dark" VerticalAlignment="Center"/></StackPanel></Button>
+                                <Button Tag="Light" Style="{StaticResource NodrPopupButton}" Click="OnThemePopupItemClick"><StackPanel Orientation="Horizontal"><Image Source="pack://application:,,,/Assets/Ui/theme-light.png" Width="20" Height="20" Margin="0,0,9,0"/><TextBlock Text="Light" VerticalAlignment="Center"/></StackPanel></Button>
+                            </StackPanel>
+                        </Border>
+                    </Popup>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <ScrollViewer x:Name="PageScroll" Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+            <ScrollViewer.Style>
+                <Style TargetType="ScrollViewer">
+                    <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsUninstallerSelected}" Value="True">
+                            <Setter Property="VerticalScrollBarVisibility" Value="Disabled"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ScrollViewer.Style>
+            <Grid Margin="18,12,18,20">
+                <!-- OVERVIEW -->
+                <Grid Visibility="{Binding IsOverviewSelected, Converter={StaticResource BoolToVisibility}}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/><RowDefinition Height="10"/><RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/><RowDefinition Height="Auto"/><RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="{services:Loc Overview.Title}" FontSize="28" FontWeight="SemiBold"/>
+                            <TextBlock Text="{services:Loc Overview.Subtitle}" Margin="0,6,0,0" FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Opacity="0.78">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"><Ellipse Width="6" Height="6" Fill="{DynamicResource SuccessBrush}" Margin="0,0,7,0"/><TextBlock Text="{Binding SensorStatus}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/></StackPanel>
+                            <TextBlock Text="{Binding LastUpdated}" Margin="0,4,0,0" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Right"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Compact system status -->
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="10"/><ColumnDefinition Width="*"/><ColumnDefinition Width="10"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Background="{DynamicResource SurfaceBrush}" CornerRadius="12" Padding="14,11">
+                            <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <StackPanel><TextBlock Text="CPU" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/><TextBlock Text="{Binding CpuValue}" Margin="0,2,0,0" FontSize="24" FontWeight="SemiBold"/></StackPanel>
+                                <StackPanel Grid.Column="1" Margin="18,0,0,0" VerticalAlignment="Center"><TextBlock Text="{Binding CpuSubtitle}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" Visibility="{Binding HasCpuTemperature, Converter={StaticResource BoolToVisibility}}"/><controls:Sparkline Margin="0,5,0,0" Height="24" ItemsSource="{Binding CpuHistory}" Stroke="{DynamicResource AccentBrush}"/></StackPanel>
+                            </Grid>
+                        </Border>
+                        <Border Grid.Column="2" Background="{DynamicResource SurfaceBrush}" CornerRadius="12" Padding="14,11">
+                            <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <StackPanel><TextBlock Text="GPU" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/><TextBlock Text="{Binding GpuValue}" Margin="0,2,0,0" FontSize="24" FontWeight="SemiBold"/></StackPanel>
+                                <StackPanel Grid.Column="1" Margin="18,0,0,0" VerticalAlignment="Center"><TextBlock Text="{Binding GpuSubtitle}" FontSize="11" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource TextSecondaryBrush}"/><controls:Sparkline Margin="0,5,0,0" Height="24" ItemsSource="{Binding GpuHistory}" Stroke="{DynamicResource AccentBrush}" Visibility="{Binding HasGpuData, Converter={StaticResource BoolToVisibility}}"/></StackPanel>
+                            </Grid>
+                        </Border>
+                        <Border Grid.Column="4" Background="{DynamicResource SurfaceBrush}" CornerRadius="12" Padding="14,11">
+                            <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <StackPanel><TextBlock Text="RAM" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/><TextBlock Text="{Binding RamValue}" Margin="0,2,0,0" FontSize="24" FontWeight="SemiBold"/></StackPanel>
+                                <StackPanel Grid.Column="1" Margin="18,0,0,0" VerticalAlignment="Center"><TextBlock Text="{Binding RamSubtitle}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/><controls:Sparkline Margin="0,5,0,0" Height="24" ItemsSource="{Binding RamHistory}" Stroke="{DynamicResource AccentBrush}"/></StackPanel>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <!-- Primary cleanup status -->
+                    <Border Grid.Row="4" Background="{DynamicResource SurfaceBrush}" CornerRadius="14" Padding="18,15">
+                        <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="{services:Loc Overview.CleanupStatus}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                <TextBlock Text="{Binding OverviewCleanupHeadline}" Margin="0,5,0,0" FontSize="25" FontWeight="SemiBold"/>
+                                <TextBlock Text="{Binding OverviewCleanupStatus}" Margin="0,6,24,0" MaxWidth="610" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <Button Grid.Column="1" Content="{services:Loc Overview.QuickCleanup}" Command="{Binding QuickCleanupCommand}" Style="{StaticResource PrimaryButton}" VerticalAlignment="Center" Padding="20,11"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Balanced lower dashboard: Storage + Specs / Quick tools -->
+                    <Grid Grid.Row="6">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <StackPanel Orientation="Horizontal"><TextBlock Text="&#xEDA2;" Style="{StaticResource IconText}" Margin="0,1,8,0"/><TextBlock Text="{services:Loc Overview.Storage}" Style="{StaticResource SectionTitle}"/></StackPanel>
+                            <Border Margin="0,8,0,0" Background="{DynamicResource SurfaceBrush}" CornerRadius="12" Padding="10,6">
+                                <ItemsControl ItemsSource="{Binding Disks}"><ItemsControl.ItemTemplate><DataTemplate>
+                                    <Button Style="{StaticResource DriveCardButton}" Command="{Binding DataContext.ShowDriveDetailsCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Margin="0,2">
+                                        <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="6"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                            <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="18"/></Grid.ColumnDefinitions><TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" FontSize="12"/><TextBlock Grid.Column="1" Text="{Binding UsageText}" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}"/><TextBlock Grid.Column="2" Text="&#xE76C;" HorizontalAlignment="Right" FontFamily="Segoe MDL2 Assets" Foreground="{DynamicResource TextSecondaryBrush}"><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/><Style.Triggers><DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Button}}" Value="True"><Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock></Grid>
+                                            <ProgressBar Grid.Row="2" Value="{Binding UsedPercent, Mode=OneWay}" Maximum="100" Foreground="{Binding UsageBrush}" Style="{StaticResource FlatProgressBar}"/>
+                                        </Grid>
+                                    </Button>
+                                </DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+                            </Border>
+
+                            <TextBlock Text="{services:Loc Overview.SystemSpecs}" Style="{StaticResource SectionTitle}" Margin="0,12,0,0"/>
+                            <Border Margin="0,8,0,0" Background="{DynamicResource SurfaceBrush}" CornerRadius="12" Padding="12,10">
+                                <StackPanel>
+                                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="72"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock Text="CPU" Style="{StaticResource MutedText}"/><TextBlock Grid.Column="1" Text="{Binding CpuName}" FontSize="11" TextTrimming="CharacterEllipsis"/></Grid>
+                                    <Grid Margin="0,7,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="72"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock Text="GPU" Style="{StaticResource MutedText}"/><TextBlock Grid.Column="1" Text="{Binding GpuName}" FontSize="11" TextTrimming="CharacterEllipsis"/></Grid>
+                                    <Grid Margin="0,7,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="72"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock Text="{services:Loc Overview.System}" Style="{StaticResource MutedText}"/><TextBlock Grid.Column="1" FontSize="11" TextTrimming="CharacterEllipsis"><Run Text="{Binding WindowsInfo, Mode=OneWay}"/><Run Text=" · "/><Run Text="{Binding ArchitectureInfo, Mode=OneWay}"/></TextBlock></Grid>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <Grid Grid.Column="2" VerticalAlignment="Stretch">
+                            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="8"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                            <TextBlock Text="{services:Loc Overview.QuickTools}" Style="{StaticResource SectionTitle}"/>
+                            <UniformGrid Grid.Row="2" Columns="1" Rows="4" VerticalAlignment="Stretch">
+                                <Button Command="{Binding QuickRecycleBinCommand}" Style="{StaticResource QuickToolButton}" Margin="0,0,0,6"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="30"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="&#xE74D;" Style="{StaticResource IconText}" FontSize="16" VerticalAlignment="Center"/><StackPanel Grid.Column="1"><TextBlock Text="{services:Loc Overview.RecycleBin}" FontWeight="SemiBold" FontSize="12"/><TextBlock Text="{Binding RecycleBinSummary}" FontSize="9.5" Foreground="{DynamicResource TextSecondaryBrush}"/></StackPanel><TextBlock Grid.Column="2" Text="&#xE76C;" Style="{StaticResource IconText}" VerticalAlignment="Center"/></Grid></Button>
+                                <Button Command="{Binding QuickShaderCacheCommand}" Style="{StaticResource QuickToolButton}" Margin="0,0,0,6"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="30"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="&#xE945;" Style="{StaticResource IconText}" FontSize="16" VerticalAlignment="Center"/><StackPanel Grid.Column="1"><TextBlock Text="{services:Loc Overview.ClearShaderCache}" FontWeight="SemiBold" FontSize="12"/><TextBlock Text="{services:Loc Overview.ShaderHint}" FontSize="9.5" Foreground="{DynamicResource TextSecondaryBrush}"/></StackPanel><TextBlock Grid.Column="2" Text="&#xE76C;" Style="{StaticResource IconText}" VerticalAlignment="Center"/></Grid></Button>
+                                <Button Command="{Binding QuickLargeFilesCommand}" Style="{StaticResource QuickToolButton}" Margin="0,0,0,6"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="30"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="&#xE8A5;" Style="{StaticResource IconText}" FontSize="16" VerticalAlignment="Center"/><StackPanel Grid.Column="1"><TextBlock Text="{services:Loc Overview.LargeFilesTool}" FontWeight="SemiBold" FontSize="12"/><TextBlock Text="{services:Loc Overview.LargeFilesHint}" FontSize="9.5" Foreground="{DynamicResource TextSecondaryBrush}"/></StackPanel><TextBlock Grid.Column="2" Text="&#xE76C;" Style="{StaticResource IconText}" VerticalAlignment="Center"/></Grid></Button>
+                                <Button Command="{Binding QuickBrowserCleanupCommand}" Style="{StaticResource QuickToolButton}"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="30"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="&#xE774;" Style="{StaticResource IconText}" FontSize="16" VerticalAlignment="Center"/><StackPanel Grid.Column="1"><TextBlock Text="{services:Loc Overview.BrowserCleanup}" FontWeight="SemiBold" FontSize="12"/><TextBlock Text="{services:Loc Overview.BrowserHint}" FontSize="9.5" Foreground="{DynamicResource TextSecondaryBrush}"/></StackPanel><TextBlock Grid.Column="2" Text="&#xE76C;" Style="{StaticResource IconText}" VerticalAlignment="Center"/></Grid></Button>
+                            </UniformGrid>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                <!-- CLEANUP -->
+                <Grid Margin="0,0,0,72" Visibility="{Binding IsCleanupSelected, Converter={StaticResource BoolToVisibility}}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="18"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="18"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Page title: one clear job, no duplicate action. -->
+                    <StackPanel>
+                        <TextBlock Text="{services:Loc Cleanup.Title}" FontSize="28" FontWeight="SemiBold" />
+                        <TextBlock Text="{services:Loc Cleanup.Subtitle}" Margin="0,6,0,0" FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" />
+                    </StackPanel>
+
+                    <!-- Compact scan summary. The destructive action intentionally lives only in the sticky bottom bar. -->
+                    <Border Grid.Row="2" Background="{DynamicResource SurfaceBrush}" CornerRadius="14" Padding="20,18">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsCleanupSuccess}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="24"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="24"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="{services:Loc Cleanup.FoundLabel}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" Visibility="{Binding HasCleanupResults, Converter={StaticResource BoolToVisibility}}"/>
+                                <TextBlock Text="{Binding TotalCleanupSizeText}" Margin="0,2,0,0" FontSize="22" FontWeight="SemiBold" Visibility="{Binding HasCleanupResults, Converter={StaticResource BoolToVisibility}}"/>
+                                <TextBlock Text="{Binding CleanupHeadline}" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}">
+                                    <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding HasCleanupResults}" Value="False"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Text="{Binding CleanupStatus}" Margin="0,5,0,0" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" MaxWidth="360"/>
+                            </StackPanel>
+
+                            <Border Grid.Column="2" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1,0,0,0" Padding="22,0,0,0" VerticalAlignment="Stretch" Visibility="{Binding HasCleanupResults, Converter={StaticResource BoolToVisibility}}">
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="{services:Loc Cleanup.PersonalFilesSafe}" FontSize="12" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{services:Loc Cleanup.PersonalFilesSafeHint}" Margin="0,4,0,0" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" MaxWidth="330"/>
+                                </StackPanel>
+                            </Border>
+
+                            <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Button Content="{services:Loc Common.Cancel}" Command="{Binding CancelCleanupScanCommand}" Style="{StaticResource SecondaryButton}" Margin="0,0,10,0" Visibility="{Binding CanCancelCleanupScan, Converter={StaticResource BoolToVisibility}}"/>
+                                <Button Content="{services:Loc Common.ScanAgain}" Command="{Binding ScanCleanupCommand}" Padding="14,9">
+                                    <Button.Style><Style TargetType="Button" BasedOn="{StaticResource SecondaryButton}"><Style.Triggers><DataTrigger Binding="{Binding IsCleanupBusy}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Button.Style>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Grid Grid.Row="4">
+                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="14"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+
+                        <Grid Visibility="{Binding HasCleanupResults, Converter={StaticResource BoolToVisibility}}">
+                            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="12"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+
+                            <!-- Selection summary aligns to the exact left/right edges of every category card. -->
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="8"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Border Width="28" Height="28" CornerRadius="14" Background="{DynamicResource AccentSoftBrush}" Margin="0,0,10,0">
+                                        <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Text="{Binding SelectedCleanupSummaryText}" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                    <TextBlock Text=" · " Margin="7,0" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding SelectedCleanupCountText}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <Button Grid.Column="1" Content="{services:Loc Common.SelectAll}" Command="{Binding SelectAllCleanupCommand}" Style="{StaticResource LinkButton}" Padding="8,5" VerticalAlignment="Center" Foreground="{DynamicResource AccentBrush}"/>
+                                <Button Grid.Column="3" Content="{services:Loc Common.DeselectAll}" Command="{Binding ClearAllCleanupCommand}" Style="{StaticResource LinkButton}" Padding="8,5" VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                            </Grid>
+
+                            <StackPanel Grid.Row="2">
+                                <TextBlock Text="{services:Loc Cleanup.Recommended}" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,8"/>
+                                <ItemsControl ItemsSource="{Binding RecommendedCleanupCategories}">
+                                    <ItemsControl.ItemTemplate><DataTemplate>
+                                        <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="12" Padding="18,14" Margin="0,0,0,10">
+                                            <Border.Style><Style TargetType="Border"><Style.Triggers><DataTrigger Binding="{Binding IsRemoving}" Value="True"><DataTrigger.EnterActions><BeginStoryboard><Storyboard><DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.14"/></Storyboard></BeginStoryboard></DataTrigger.EnterActions></DataTrigger></Style.Triggers></Style></Border.Style>
+                                            <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="16"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                                <CheckBox IsChecked="{Binding IsSelected}" IsEnabled="{Binding CanSelect}" VerticalAlignment="Center"/>
+                                                <Grid Grid.Column="2"><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock Text="{Binding IconGlyph}" Style="{StaticResource IconText}" FontSize="16" VerticalAlignment="Center"/><StackPanel Grid.Column="1"><StackPanel Orientation="Horizontal"><TextBlock Text="{Binding Name}" FontSize="14" FontWeight="SemiBold"/><Border Background="{DynamicResource AccentSoftBrush}" CornerRadius="7" Padding="7,2" Margin="9,0,0,0"><TextBlock Text="{Binding SafetyBadge}" FontSize="10" Foreground="{Binding SafetyColor}" FontWeight="SemiBold"/></Border></StackPanel><TextBlock Text="{Binding ImpactDescription}" Margin="0,5,0,0" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/></StackPanel></Grid>
+                                                <StackPanel Grid.Column="3" Width="96" Margin="18,0,0,0" HorizontalAlignment="Right"><TextBlock Text="{Binding SizeText}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Right"/><TextBlock Text="{Binding FileCountText}" Margin="0,4,0,0" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Right"/></StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate></ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <TextBlock Text="{services:Loc Cleanup.Optional}" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,8,0,8"/>
+                                <ItemsControl ItemsSource="{Binding OptionalCleanupCategories}">
+                                    <ItemsControl.ItemTemplate><DataTemplate>
+                                        <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="12" Padding="18,14" Margin="0,0,0,10">
+                                            <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="16"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                                <CheckBox IsChecked="{Binding IsSelected}" IsEnabled="{Binding CanSelect}" VerticalAlignment="Center"/>
+                                                <Grid Grid.Column="2"><Grid.ColumnDefinitions><ColumnDefinition Width="28"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock Text="{Binding IconGlyph}" Style="{StaticResource IconText}" FontSize="16" VerticalAlignment="Center"/><StackPanel Grid.Column="1"><StackPanel Orientation="Horizontal"><TextBlock Text="{Binding Name}" FontSize="14" FontWeight="SemiBold"/><Border Background="{DynamicResource AccentSoftBrush}" CornerRadius="7" Padding="7,2" Margin="9,0,0,0"><TextBlock Text="{Binding SafetyBadge}" FontSize="10" Foreground="{Binding SafetyColor}" FontWeight="SemiBold"/></Border></StackPanel><TextBlock Text="{Binding ImpactDescription}" Margin="0,5,0,0" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/></StackPanel></Grid>
+                                                <StackPanel Grid.Column="3" Width="96" Margin="18,0,0,0" HorizontalAlignment="Right"><TextBlock Text="{Binding SizeText}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Right"/><TextBlock Text="{Binding FileCountText}" Margin="0,4,0,0" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Right"/></StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate></ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border Grid.Row="0" Grid.RowSpan="3" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="14" Padding="28,24" Visibility="{Binding IsCleanupSuccess, Converter={StaticResource BoolToVisibility}}">
+                            <Grid>
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="18"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                <Border Width="52" Height="52" CornerRadius="26" Background="{DynamicResource AccentSoftBrush}" VerticalAlignment="Center"><TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="23" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                                <StackPanel Grid.Column="2" VerticalAlignment="Center"><TextBlock Text="{Binding CleanupHeadline}" FontSize="22" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/><TextBlock Text="{Binding CleanupResultText}" Margin="0,6,0,0" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}"/></StackPanel>
+                                <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center" Margin="24,0,0,0"><Button Content="{services:Loc Common.ScanAgain}" Command="{Binding ScanCleanupCommand}" Style="{StaticResource SecondaryButton}" Padding="16,10" Margin="0,0,10,0"/><Button Content="{services:Loc Cleanup.BackToOverview}" Command="{Binding DoneCleanupCommand}" Style="{StaticResource PrimaryButton}" Padding="18,10"/></StackPanel>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+
+                <!-- FILES -->
+                <Grid Visibility="{Binding IsFilesSelected, Converter={StaticResource BoolToVisibility}}">
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="18"/><RowDefinition Height="Auto"/><RowDefinition Height="18"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="{services:Loc Files.Title}" FontSize="28" FontWeight="SemiBold" />
+                        <TextBlock Text="{services:Loc Files.Subtitle}" Margin="0,7,0,0" FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" />
+                    </StackPanel>
+
+                    <Border Grid.Row="2" Background="{DynamicResource SurfaceBrush}" CornerRadius="14" Padding="20">
+                        <StackPanel>
+                            <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding FilesHeadline}" FontSize="22" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding FilesStatus}" Margin="0,6,24,0" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" MaxWidth="620" />
+                                    <TextBlock Text="{Binding FilesRoot}" Margin="0,6,24,0" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" TextTrimming="CharacterEllipsis" MaxWidth="620" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Button Content="{services:Loc Common.Cancel}" Command="{Binding CancelFilesScanCommand}" Style="{StaticResource SecondaryButton}" Margin="0,0,10,0" Visibility="{Binding IsFilesBusy, Converter={StaticResource BoolToVisibility}}" />
+                                    <Button Command="{Binding ChooseFilesFolderCommand}"><Button.Content><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" Margin="0,0,8,0"/><TextBlock Text="{services:Loc Files.ChooseFolder}"/></StackPanel></Button.Content><Button.Style><Style TargetType="Button" BasedOn="{StaticResource PrimaryButton}"><Style.Triggers><DataTrigger Binding="{Binding IsFilesBusy}" Value="True"><Setter Property="IsEnabled" Value="False"/></DataTrigger></Style.Triggers></Style></Button.Style></Button>
+                                </StackPanel>
+                            </Grid>
+                            <StackPanel Margin="0,16,0,0">
+                                <TextBlock Text="{services:Loc Files.QuickTargets}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,8"/>
+                                <UniformGrid Columns="4">
+                                    <Button Command="{Binding ScanQuickFolderCommand}" CommandParameter="Downloads" Style="{StaticResource SecondaryButton}" Margin="0,0,6,0" Padding="10,7"><StackPanel Orientation="Horizontal"><TextBlock Text="📥" Margin="0,0,6,0"/><TextBlock Text="{services:Loc Files.Downloads}"/></StackPanel></Button>
+                                    <Button Command="{Binding ScanQuickFolderCommand}" CommandParameter="Desktop" Style="{StaticResource SecondaryButton}" Margin="2,0,4,0" Padding="10,7"><StackPanel Orientation="Horizontal"><TextBlock Text="🖥" Margin="0,0,6,0"/><TextBlock Text="{services:Loc Files.Desktop}"/></StackPanel></Button>
+                                    <Button Command="{Binding ScanQuickFolderCommand}" CommandParameter="Documents" Style="{StaticResource SecondaryButton}" Margin="4,0,2,0" Padding="10,7"><StackPanel Orientation="Horizontal"><TextBlock Text="📁" Margin="0,0,6,0"/><TextBlock Text="{services:Loc Files.Documents}"/></StackPanel></Button>
+                                    <Button Command="{Binding ScanQuickFolderCommand}" CommandParameter="C" Style="{StaticResource SecondaryButton}" Margin="6,0,0,0" Padding="10,7"><StackPanel Orientation="Horizontal"><TextBlock Text="💾" Margin="0,0,6,0"/><TextBlock Text="{services:Loc Files.EntireC}"/></StackPanel></Button>
+                                </UniformGrid>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Grid Grid.Row="4">
+                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="12"/><RowDefinition Height="Auto"/><RowDefinition Height="12"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                        <Grid>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center"><TextBlock Text="&#xE8B7;" Style="{StaticResource IconText}" Margin="0,1,9,0"/><TextBlock Text="{services:Loc Files.LargeFiles}" Style="{StaticResource SectionTitle}"/></StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Content="{services:Loc Files.Filter.All}" Command="{Binding SetFilesFilterCommand}" CommandParameter="All"><Button.Style><Style TargetType="Button" BasedOn="{StaticResource FilesFilterChip}"><Style.Triggers><DataTrigger Binding="{Binding IsAllFilesFilter}" Value="True"><Setter Property="Background" Value="{DynamicResource AccentSoftBrush}"/><Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/></DataTrigger></Style.Triggers></Style></Button.Style></Button>
+                                <Button Content="{services:Loc Files.Filter.Archives}" Command="{Binding SetFilesFilterCommand}" CommandParameter="Archives"><Button.Style><Style TargetType="Button" BasedOn="{StaticResource FilesFilterChip}"><Style.Triggers><DataTrigger Binding="{Binding IsArchivesFilesFilter}" Value="True"><Setter Property="Background" Value="{DynamicResource AccentSoftBrush}"/><Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/></DataTrigger></Style.Triggers></Style></Button.Style></Button>
+                                <Button Content="{services:Loc Files.Filter.Videos}" Command="{Binding SetFilesFilterCommand}" CommandParameter="Videos"><Button.Style><Style TargetType="Button" BasedOn="{StaticResource FilesFilterChip}"><Style.Triggers><DataTrigger Binding="{Binding IsVideosFilesFilter}" Value="True"><Setter Property="Background" Value="{DynamicResource AccentSoftBrush}"/><Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/></DataTrigger></Style.Triggers></Style></Button.Style></Button>
+                                <Button Content="{services:Loc Files.Filter.Executables}" Command="{Binding SetFilesFilterCommand}" CommandParameter="Executables"><Button.Style><Style TargetType="Button" BasedOn="{StaticResource FilesFilterChip}"><Style.Triggers><DataTrigger Binding="{Binding IsExecutablesFilesFilter}" Value="True"><Setter Property="Background" Value="{DynamicResource AccentSoftBrush}"/><Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/></DataTrigger></Style.Triggers></Style></Button.Style></Button>
+                                <Button Content="{services:Loc Files.Filter.Caches}" Command="{Binding SetFilesFilterCommand}" CommandParameter="Caches"><Button.Style><Style TargetType="Button" BasedOn="{StaticResource FilesFilterChip}"><Style.Triggers><DataTrigger Binding="{Binding IsCachesFilesFilter}" Value="True"><Setter Property="Background" Value="{DynamicResource AccentSoftBrush}"/><Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/></DataTrigger></Style.Triggers></Style></Button.Style></Button>
+                                <Button x:Name="FilesSortButton" Style="{StaticResource CompactImageButton}" Margin="6,0,0,0" ToolTip="{services:Loc Files.SortTooltip}" Click="OnFilesSortMenuClick">
+                                    <Viewbox Width="18" Height="18" Stretch="Uniform"><Canvas Width="20" Height="20"><Path Data="M3,5 L17,5 M5.5,10 L14.5,10 M8,15 L12,15" Stroke="{DynamicResource TextPrimaryBrush}" StrokeThickness="1.8" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/><Path Data="M15.5,13 L17.5,15 L19.5,13" Stroke="{DynamicResource AccentBrush}" StrokeThickness="1.6" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" Fill="Transparent"/></Canvas></Viewbox>
+                                </Button>
+                                <Popup x:Name="FilesSortPopup" PlacementTarget="{Binding ElementName=FilesSortButton}" Placement="Bottom" HorizontalOffset="-174" VerticalOffset="5" StaysOpen="False" AllowsTransparency="True" PopupAnimation="Fade">
+                                    <Border Style="{StaticResource NodrPopupPanel}" Width="210"><StackPanel>
+                                        <Button Content="{services:Loc Files.Sort.Size}" Tag="Size" Style="{StaticResource NodrPopupButton}" Click="OnFilesSortPopupItemClick"/>
+                                        <Button Content="{services:Loc Files.Sort.Date}" Tag="Date" Style="{StaticResource NodrPopupButton}" Click="OnFilesSortPopupItemClick"/>
+                                    </StackPanel></Border>
+                                </Popup>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border Grid.Row="2" Background="{DynamicResource SurfaceBrush}" CornerRadius="10" Padding="14,10" Visibility="{Binding HasSelectedSafeFiles, Converter={StaticResource BoolToVisibility}}"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions><TextBlock Text="{Binding SelectedFilesSummary}" VerticalAlignment="Center" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}"/><Button Grid.Column="1" Command="{Binding BulkRecycleFilesCommand}" Style="{StaticResource SecondaryButton}" Padding="12,8" Content="{services:Loc Files.MoveSelected}"/></Grid></Border>
+
+                        <Border Grid.Row="4" Background="{DynamicResource SurfaceBrush}" CornerRadius="14" Padding="28" MinHeight="186" Visibility="{Binding IsFilesBusy, Converter={StaticResource BoolToVisibility}}">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="560">
+                                <Border Width="54" Height="54" CornerRadius="14" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Background="{DynamicResource SurfaceHoverBrush}" HorizontalAlignment="Center">
+                                    <Viewbox Width="25" Height="25" Stretch="Uniform">
+                                        <Canvas Width="24" Height="24">
+                                            <Ellipse Width="15" Height="15" Canvas.Left="2" Canvas.Top="2" Stroke="{DynamicResource AccentBrush}" StrokeThickness="1.8"/>
+                                            <Path Data="M14.5,14.5 L21,21" Stroke="{DynamicResource AccentBrush}" StrokeThickness="2" StrokeStartLineCap="Round"/>
+                                            <Ellipse Width="4" Height="4" Canvas.Left="10" Canvas.Top="7.5" Fill="{DynamicResource AccentBrush}"/>
+                                        </Canvas>
+                                    </Viewbox>
+                                </Border>
+                                <TextBlock Text="{Binding FilesHeadline}" Margin="0,14,0,0" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding FilesRoot}" Margin="0,5,0,0" FontSize="11" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" TextTrimming="CharacterEllipsis" MaxWidth="520"/>
+                                <TextBlock Text="{Binding FilesStatus}" Margin="0,7,0,0" TextAlignment="Center" TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" MaxWidth="560"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Row="4" Background="{DynamicResource SurfaceBrush}" CornerRadius="14" Padding="28" Visibility="{Binding ShowFilesEmptyState, Converter={StaticResource BoolToVisibility}}">
+                            <StackPanel HorizontalAlignment="Center" MaxWidth="420">
+                                <Border Width="54" Height="54" CornerRadius="14" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Background="{DynamicResource SurfaceHoverBrush}" HorizontalAlignment="Center"><TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="23" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                                <TextBlock Text="{Binding FilesEmptyTitle}" Margin="0,14,0,0" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding FilesEmptyHint}" Margin="0,7,0,0" TextAlignment="Center" TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <ItemsControl Grid.Row="4" ItemsSource="{Binding VisibleFiles}">
+                            <ItemsControl.ItemTemplate><DataTemplate>
+                                <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="12" Padding="18,14" Margin="0,0,0,10">
+                                    <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="12"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="10"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="10"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                        <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" VerticalAlignment="Center" Visibility="{Binding CanQuickRecycle, Converter={StaticResource BoolToVisibility}}"/>
+                                        <StackPanel Grid.Column="2"><TextBlock Text="{Binding Name}" ToolTip="{Binding FullPath}" FontSize="14" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/><TextBlock Text="{Binding Folder}" ToolTip="{Binding FullPath}" Margin="0,4,20,0" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" TextTrimming="CharacterEllipsis"/><StackPanel Orientation="Horizontal" Margin="0,7,20,0"><TextBlock Text="{Binding SafetyIcon}" Foreground="{Binding SafetyForeground}" FontSize="13" FontWeight="Bold" Width="20"/><TextBlock Text="{Binding SafetyLabel}" Foreground="{Binding SafetyForeground}" FontSize="11" FontWeight="SemiBold"/><TextBlock Text=" · " Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11"/><TextBlock Text="{Binding SafetyCategory}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="11"/></StackPanel></StackPanel>
+                                        <TextBlock Grid.Column="3" Text="{Binding ModifiedText}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="5" Text="{Binding SizeText}" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                        <Button Grid.Column="7" Content="{services:Loc Files.Details}" Command="{Binding DetailsCommand}" Style="{StaticResource SecondaryButton}" Padding="11,8" VerticalAlignment="Center"/>
+                                        <Button Grid.Column="9" Command="{Binding RecycleCommand}" Style="{StaticResource SecondaryButton}" Padding="11,8" VerticalAlignment="Center" Visibility="{Binding CanQuickRecycle, Converter={StaticResource BoolToVisibility}}" Content="{services:Loc Files.MoveToBin}"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate></ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                </Grid>
+
+                <!-- UNINSTALLER -->
+                <Grid Height="{Binding ActualHeight, ElementName=PageScroll}" Margin="0,-12,0,-20" Visibility="{Binding IsUninstallerSelected, Converter={StaticResource BoolToVisibility}}">
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="10"/><RowDefinition Height="Auto"/><RowDefinition Height="8"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                    <StackPanel Margin="0,12,0,0">
+                        <TextBlock Text="{services:Loc Uninstaller.Title}" FontSize="26" FontWeight="SemiBold"/>
+                        <TextBlock Text="{services:Loc Uninstaller.Subtitle}" Margin="0,4,0,0" FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <Border Grid.Row="2" Background="{DynamicResource SurfaceBrush}" CornerRadius="14" Padding="12">
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="10"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="8"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                            <Grid>
+                                <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" Margin="11,0,0,0" Panel.ZIndex="2" IsHitTestVisible="False"/>
+                                <TextBox x:Name="UninstallerSearchBox" Text="{Binding UninstallerSearch, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource NodrTextBox}" Padding="31,7,36,7" ToolTip="{services:Loc Uninstaller.SearchTooltip}" PreviewKeyDown="OnUninstallerSearchPreviewKeyDown"/>
+                                <TextBlock Text="{services:Loc Uninstaller.SearchPlaceholder}" Margin="31,0,40,0" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" IsHitTestVisible="False">
+                                    <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding UninstallerSearch}" Value=""/><Condition Binding="{Binding IsKeyboardFocusWithin, ElementName=UninstallerSearchBox}" Value="False"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Visible"/></MultiDataTrigger></Style.Triggers></Style></TextBlock.Style>
+                                </TextBlock>
+                                <Button HorizontalAlignment="Right" VerticalAlignment="Center" Width="28" Height="28" Margin="0,0,4,0" Content="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="10" Command="{Binding ClearUninstallerSearchCommand}" ToolTip="{services:Loc Uninstaller.ClearSearch}">
+                                    <Button.Style><Style TargetType="Button" BasedOn="{StaticResource LinkButton}"><Setter Property="Visibility" Value="Visible"/><Style.Triggers><DataTrigger Binding="{Binding UninstallerSearch}" Value=""><Setter Property="Visibility" Value="Collapsed"/></DataTrigger></Style.Triggers></Style></Button.Style>
+                                </Button>
+                            </Grid>
+                            <Button x:Name="UninstallerSortButton" Grid.Column="2" Style="{StaticResource CompactImageButton}" ToolTip="{services:Loc Uninstaller.SortTooltip}" Click="OnUninstallerSortMenuClick">
+                                <Viewbox Width="18" Height="18" Stretch="Uniform">
+                                    <Canvas Width="20" Height="20">
+                                        <Path Data="M3,5 L17,5 M5.5,10 L14.5,10 M8,15 L12,15" Stroke="{DynamicResource TextPrimaryBrush}" StrokeThickness="1.8" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
+                                        <Path Data="M15.5,13 L17.5,15 L19.5,13" Stroke="{DynamicResource AccentBrush}" StrokeThickness="1.6" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" Fill="Transparent"/>
+                                    </Canvas>
+                                </Viewbox>
+                            </Button>
+                            <Popup x:Name="UninstallerSortPopup" PlacementTarget="{Binding ElementName=UninstallerSortButton}" Placement="Bottom" HorizontalOffset="-170" VerticalOffset="5" StaysOpen="False" AllowsTransparency="True" PopupAnimation="Fade">
+                                <Border Style="{StaticResource NodrPopupPanel}" Width="210"><StackPanel>
+                                    <Button Content="{services:Loc Uninstaller.Sort.DateDesc}" Tag="DateDesc" Style="{StaticResource NodrPopupButton}" Click="OnUninstallerSortPopupItemClick"/>
+                                    <Button Content="{services:Loc Uninstaller.Sort.DateAsc}" Tag="DateAsc" Style="{StaticResource NodrPopupButton}" Click="OnUninstallerSortPopupItemClick"/>
+                                    <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="8,4"/>
+                                    <Button Content="{services:Loc Uninstaller.Sort.SizeDesc}" Tag="SizeDesc" Style="{StaticResource NodrPopupButton}" Click="OnUninstallerSortPopupItemClick"/>
+                                    <Button Content="{services:Loc Uninstaller.Sort.SizeAsc}" Tag="SizeAsc" Style="{StaticResource NodrPopupButton}" Click="OnUninstallerSortPopupItemClick"/>
+                                    <Border Height="1" Background="{DynamicResource BorderBrush}" Margin="8,4"/>
+                                    <Button Content="{services:Loc Uninstaller.Sort.NameAsc}" Tag="NameAsc" Style="{StaticResource NodrPopupButton}" Click="OnUninstallerSortPopupItemClick"/>
+                                    <Button Content="{services:Loc Uninstaller.Sort.NameDesc}" Tag="NameDesc" Style="{StaticResource NodrPopupButton}" Click="OnUninstallerSortPopupItemClick"/>
+                                </StackPanel></Border>
+                            </Popup>
+                            <Button Grid.Column="4" Command="{Binding RefreshInstalledAppsCommand}" Style="{StaticResource CompactImageButton}" ToolTip="{services:Loc Uninstaller.Refresh}">
+                                <Viewbox Width="18" Height="18" Stretch="Uniform">
+                                    <Canvas Width="20" Height="20">
+                                        <Path Data="M16.4,7.2 A7,7 0 1 0 16.7,12.2" Stroke="{DynamicResource TextPrimaryBrush}" StrokeThickness="1.8" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Fill="Transparent"/>
+                                        <Path Data="M16.5,3.5 L16.5,7.4 L12.6,7.4" Stroke="{DynamicResource AccentBrush}" StrokeThickness="1.7" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" Fill="Transparent"/>
+                                    </Canvas>
+                                </Viewbox>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <Grid Grid.Row="4" MinHeight="0" Margin="0,0,0,20">
+                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="6"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                        <Grid>
+                            <TextBlock Text="{Binding UninstallerCountText}" Style="{StaticResource SectionTitle}"/>
+                            <TextBlock Text="{Binding UninstallerStatus}" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        </Grid>
+
+                        <Border Grid.Row="2" Background="{DynamicResource SurfaceBrush}" CornerRadius="14" Padding="10">
+                            <Grid>
+                                <Border Panel.ZIndex="5" Background="{DynamicResource SurfaceBrush}" CornerRadius="11" Visibility="{Binding IsUninstallerBusy, Converter={StaticResource BoolToVisibility}}">
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="260">
+                                        <TextBlock Text="&#xE895;" FontFamily="Segoe MDL2 Assets" FontSize="24" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{Binding UninstallerStatus}" Margin="0,12,0,10" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+                                        <ProgressBar Height="4" IsIndeterminate="True" Foreground="{DynamicResource AccentBrush}" Style="{StaticResource FlatProgressBar}"/>
+                                    </StackPanel>
+                                </Border>
+                                <ListBox ItemsSource="{Binding VisibleInstalledApps}" Background="Transparent" BorderThickness="0" ItemContainerStyle="{StaticResource UninstallerListItem}"
+                                         ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+                                    <ListBox.ItemTemplate><DataTemplate>
+                                        <Grid Margin="12,10">
+                                            <Grid.ColumnDefinitions><ColumnDefinition Width="40"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/><ColumnDefinition Width="92"/><ColumnDefinition Width="84"/><ColumnDefinition Width="12"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                            <Border Width="36" Height="36" CornerRadius="9" Background="{DynamicResource SurfaceHoverBrush}" VerticalAlignment="Center">
+                                                <Grid><TextBlock Text="{Binding FallbackLetter}" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/><Image Source="{Binding Icon}" Width="24" Height="24" Stretch="Uniform"/></Grid>
+                                            </Border>
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" ToolTip="{Binding Name}"/>
+                                                <TextBlock Text="{Binding PublisherLine}" Margin="0,4,0,0" FontSize="10.5" Foreground="{DynamicResource TextSecondaryBrush}" TextTrimming="CharacterEllipsis" ToolTip="{Binding PublisherLine}"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Column="3" Text="{Binding InstallDateText}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                                            <TextBlock Grid.Column="4" Text="{Binding SizeText}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                                            <Button Grid.Column="6" Content="{services:Loc Uninstaller.Uninstall}" Command="{Binding DataContext.UninstallAppCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" IsEnabled="{Binding CanUninstall}" Style="{StaticResource DangerButton}" Padding="12,8" VerticalAlignment="Center" ToolTip="{services:Loc Uninstaller.UninstallTooltip}"/>
+                                        </Grid>
+                                    </DataTemplate></ListBox.ItemTemplate>
+                                </ListBox>
+
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="430">
+                                    <StackPanel.Style><Style TargetType="StackPanel"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><MultiDataTrigger><MultiDataTrigger.Conditions><Condition Binding="{Binding HasInstalledApps}" Value="False"/><Condition Binding="{Binding IsUninstallerBusy}" Value="False"/></MultiDataTrigger.Conditions><Setter Property="Visibility" Value="Visible"/></MultiDataTrigger></Style.Triggers></Style></StackPanel.Style>
+                                    <Border Width="54" Height="54" CornerRadius="14" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Background="{DynamicResource SurfaceHoverBrush}" HorizontalAlignment="Center"><TextBlock Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" FontSize="22" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+                                    <TextBlock Text="{services:Loc Uninstaller.EmptyTitle}" Margin="0,14,0,0" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{services:Loc Uninstaller.EmptyHint}" Margin="0,7,0,0" TextAlignment="Center" TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+
+        <!-- Cleanup action stays anchored to the viewport, independent of the category list scroll position. -->
+        <Border Grid.Row="1" Panel.ZIndex="15" VerticalAlignment="Bottom" Margin="22,0,22,14" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="12" Padding="16,12">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsCleanupSelected}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
+                        <DataTrigger Binding="{Binding HasCleanupResults}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
+                        <DataTrigger Binding="{Binding IsCleanupSuccess}" Value="True"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="{Binding SelectedCleanupSummaryText}" FontSize="13" FontWeight="SemiBold"/>
+                    <TextBlock Text="{services:Loc Cleanup.BottomHint}" Margin="0,3,0,0" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                    <TextBlock Text="{Binding CleanupProgressText}" Margin="0,3,0,0" FontSize="10" Foreground="{DynamicResource AccentBrush}" Visibility="{Binding IsCleanupCleaning, Converter={StaticResource BoolToVisibility}}"/>
+                </StackPanel>
+                <Button Grid.Column="1" Content="{Binding TopCleanupActionText}" Command="{Binding CleanSelectedCommand}" Style="{StaticResource PrimaryButton}"/>
+            </Grid>
+        </Border>
+
+        <!-- File details is an overlay drawer so clicking Details is visible even when the list is scrolled far down. -->
+        <Border Grid.Row="1" Panel.ZIndex="20" Width="470" HorizontalAlignment="Right" VerticalAlignment="Stretch"
+                Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1,0,0,0" Padding="24"
+                Visibility="{Binding HasFileDetails, Converter={StaticResource BoolToVisibility}}">
+            <Grid DataContext="{Binding SelectedFileDetails}">
+                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="18"/><RowDefinition Height="*"/><RowDefinition Height="18"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="{services:Loc Files.DetailsTitle}" FontSize="18" FontWeight="SemiBold"/>
+                        <TextBlock Text="{services:Loc Files.DetailsSubtitle}" Margin="0,5,20,0" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                    </StackPanel>
+                    <Button Grid.Column="1" Content="{services:Loc Common.Close}" Command="{Binding DataContext.CloseFileDetailsCommand, RelativeSource={RelativeSource AncestorType=Window}}" Style="{StaticResource SecondaryButton}" Padding="11,7"/>
+                </Grid>
+                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Name}" FontSize="15" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                        <TextBlock Text="{services:Loc Files.FullPath}" Margin="0,18,0,0" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Text="{Binding FullPath}" Margin="0,4,0,0" FontSize="12" TextWrapping="Wrap"/>
+                        <TextBlock Text="{services:Loc Files.SizeModified}" Margin="0,18,0,0" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0"><TextBlock Text="{Binding SizeText}" FontSize="12" FontWeight="SemiBold"/><TextBlock Text=" · " Foreground="{DynamicResource TextSecondaryBrush}"/><TextBlock Text="{Binding ModifiedText}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}"/></StackPanel>
+                        <TextBlock Text="{services:Loc Files.Assessment}" Margin="0,18,0,0" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0"><TextBlock Text="{Binding SafetyIcon}" Foreground="{Binding SafetyForeground}" FontWeight="Bold" Width="20"/><TextBlock Text="{Binding SafetyLabel}" Foreground="{Binding SafetyForeground}" FontSize="12" FontWeight="SemiBold"/><TextBlock Text=" · " Foreground="{DynamicResource TextSecondaryBrush}"/><TextBlock Text="{Binding SafetyCategory}" Foreground="{DynamicResource TextSecondaryBrush}" FontSize="12"/></StackPanel>
+                        <TextBlock Text="{Binding SafetyEffect}" Margin="20,7,0,0" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
+                        <TextBlock Text="{services:Loc Files.Why}" Margin="0,18,0,0" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                        <TextBlock Text="{Binding SafetyWhy}" Margin="0,5,0,0" FontSize="12" Foreground="{DynamicResource TextPrimaryBrush}" TextWrapping="Wrap"/>
+                        <Border Margin="0,20,0,0" Padding="12" CornerRadius="8" Background="{DynamicResource SurfaceHoverBrush}">
+                            <TextBlock FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" Text="{services:Loc Files.SafetyNote}"/>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+                <StackPanel Grid.Row="4">
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="8"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <Button Command="{Binding OpenLocationCommand}" Style="{StaticResource SecondaryButton}" Padding="11,9"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE8E5;" Style="{StaticResource IconText}" Margin="0,0,7,0"/><TextBlock Text="{services:Loc Files.OpenLocation}"/></StackPanel></Button>
+                        <Button Grid.Column="2" Command="{Binding OpenParentFolderCommand}" Style="{StaticResource SecondaryButton}" Padding="11,9"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE838;" Style="{StaticResource IconText}" Margin="0,0,7,0"/><TextBlock Text="{services:Loc Files.OpenParent}"/></StackPanel></Button>
+                    </Grid>
+                    <Button Command="{Binding DataContext.SearchFileNameCommand, RelativeSource={RelativeSource AncestorType=Window}}" Style="{StaticResource SecondaryButton}" Padding="11,9" Margin="0,0,0,8" Visibility="{Binding CanSearchFileName, Converter={StaticResource BoolToVisibility}}"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE721;" Style="{StaticResource IconText}" Margin="0,0,7,0"/><TextBlock Text="{services:Loc Files.SearchName}"/></StackPanel></Button>
+                    <Button Command="{Binding DataContext.ShowCleanupCommand, RelativeSource={RelativeSource AncestorType=Window}}" Style="{StaticResource SecondaryButton}" Padding="11,9" Margin="0,0,0,8" Visibility="{Binding CanOpenCleanup, Converter={StaticResource BoolToVisibility}}"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE74D;" Style="{StaticResource IconText}" Margin="0,0,7,0"/><TextBlock Text="{services:Loc Files.OpenCleanup}"/></StackPanel></Button>
+                    <Button Command="{Binding DataContext.RecycleFileFromDetailsCommand, RelativeSource={RelativeSource AncestorType=Window}}" Style="{StaticResource DangerButton}" Padding="11,9" Visibility="{Binding CanRecycleFromDetails, Converter={StaticResource BoolToVisibility}}"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE74D;" Style="{StaticResource IconText}" Margin="0,0,7,0"/><TextBlock Text="{services:Loc Files.MoveToBin}"/></StackPanel></Button>
+                    <Button Command="{Binding DataContext.DeleteContainingFolderCommand, RelativeSource={RelativeSource AncestorType=Window}}" Style="{StaticResource DangerButton}" Padding="11,9" Margin="0,8,0,0"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE74D;" Style="{StaticResource IconText}" Margin="0,0,7,0"/><TextBlock Text="{services:Loc Files.MoveParentToBin}"/></StackPanel></Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+
+        <!-- DRIVE DETAILS -->
+        <Grid Grid.ColumnSpan="2" Panel.ZIndex="30" Visibility="{Binding HasDriveDetails, Converter={StaticResource BoolToVisibility}}">
+            <Border Background="{DynamicResource OverlayBrush}" />
+            <Border Width="690" MaxHeight="610" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="16" Padding="26">
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="22"/><RowDefinition Height="Auto"/><RowDefinition Height="24"/><RowDefinition Height="Auto"/><RowDefinition Height="24"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <StackPanel><TextBlock Text="{services:Loc Drive.Details}" FontSize="24" FontWeight="SemiBold"/><TextBlock Text="{Binding SelectedDrive.DisplayName}" Margin="0,5,0,0" FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}"/></StackPanel>
+                        <Button Grid.Column="1" Content="&#xE711;" Command="{Binding CloseDriveDetailsCommand}" Style="{StaticResource SecondaryButton}" FontFamily="Segoe MDL2 Assets" Padding="11,9"/>
+                    </Grid>
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                        <StackPanel><TextBlock Text="{services:Loc Drive.Used}" Style="{StaticResource MutedText}"/><TextBlock Text="{Binding SelectedDrive.UsedText}" Margin="0,5,0,0" FontSize="19" FontWeight="SemiBold"/></StackPanel>
+                        <StackPanel Grid.Column="1"><TextBlock Text="{services:Loc Drive.Total}" Style="{StaticResource MutedText}"/><TextBlock Text="{Binding SelectedDrive.TotalText}" Margin="0,5,0,0" FontSize="19" FontWeight="SemiBold"/></StackPanel>
+                        <StackPanel Grid.Column="2"><TextBlock Text="{services:Loc Drive.FileSystem}" Style="{StaticResource MutedText}"/><TextBlock Text="{Binding SelectedDrive.FileSystem}" Margin="0,5,0,0" FontSize="19" FontWeight="SemiBold"/></StackPanel>
+                    </Grid>
+                    <StackPanel Grid.Row="4">
+                        <TextBlock Text="{services:Loc Drive.SpaceBreakdown}" Style="{StaticResource SectionTitle}"/>
+                        <Grid Margin="0,4,0,8">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding DriveBreakdownStatus}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
+                            <TextBlock Grid.Column="1" Text="{Binding DriveBreakdownPercentText}" Margin="12,0,0,0" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" Visibility="{Binding IsDriveBreakdownBusy, Converter={StaticResource BoolToVisibility}}"/>
+                        </Grid>
+                        <ProgressBar Height="5" Value="{Binding DriveBreakdownPercent, Mode=OneWay}" Maximum="100" Foreground="{DynamicResource AccentBrush}" Style="{StaticResource FlatProgressBar}" Visibility="{Binding IsDriveBreakdownBusy, Converter={StaticResource BoolToVisibility}}"/>
+                        <TextBlock Text="{Binding DriveBreakdownCurrentPath}" Margin="0,7,0,0" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" TextTrimming="CharacterEllipsis" ToolTip="{Binding DriveBreakdownCurrentPath}" Visibility="{Binding IsDriveBreakdownBusy, Converter={StaticResource BoolToVisibility}}"/>
+                        <StackPanel Margin="0,10,0,0" Visibility="{Binding IsDriveBreakdownBusy, Converter={StaticResource BoolToVisibility}}">
+                            <Grid Margin="0,5"><Grid.ColumnDefinitions><ColumnDefinition Width="145"/><ColumnDefinition Width="*"/><ColumnDefinition Width="72"/></Grid.ColumnDefinitions><Border Width="88" Height="10" HorizontalAlignment="Left" Style="{StaticResource SkeletonBar}"/><Border Grid.Column="1" Margin="12,0" Height="7" Style="{StaticResource SkeletonBar}"/><Border Grid.Column="2" Width="48" Height="10" HorizontalAlignment="Right" Style="{StaticResource SkeletonBar}"/></Grid>
+                            <Grid Margin="0,5"><Grid.ColumnDefinitions><ColumnDefinition Width="145"/><ColumnDefinition Width="*"/><ColumnDefinition Width="72"/></Grid.ColumnDefinitions><Border Width="112" Height="10" HorizontalAlignment="Left" Style="{StaticResource SkeletonBar}"/><Border Grid.Column="1" Margin="12,0" Height="7" Style="{StaticResource SkeletonBar}"/><Border Grid.Column="2" Width="42" Height="10" HorizontalAlignment="Right" Style="{StaticResource SkeletonBar}"/></Grid>
+                            <Grid Margin="0,5"><Grid.ColumnDefinitions><ColumnDefinition Width="145"/><ColumnDefinition Width="*"/><ColumnDefinition Width="72"/></Grid.ColumnDefinitions><Border Width="96" Height="10" HorizontalAlignment="Left" Style="{StaticResource SkeletonBar}"/><Border Grid.Column="1" Margin="12,0" Height="7" Style="{StaticResource SkeletonBar}"/><Border Grid.Column="2" Width="54" Height="10" HorizontalAlignment="Right" Style="{StaticResource SkeletonBar}"/></Grid>
+                            <Grid Margin="0,5"><Grid.ColumnDefinitions><ColumnDefinition Width="145"/><ColumnDefinition Width="*"/><ColumnDefinition Width="72"/></Grid.ColumnDefinitions><Border Width="72" Height="10" HorizontalAlignment="Left" Style="{StaticResource SkeletonBar}"/><Border Grid.Column="1" Margin="12,0" Height="7" Style="{StaticResource SkeletonBar}"/><Border Grid.Column="2" Width="46" Height="10" HorizontalAlignment="Right" Style="{StaticResource SkeletonBar}"/></Grid>
+                        </StackPanel>
+                        <ItemsControl ItemsSource="{Binding DriveCategories}" Margin="0,7,0,0"><ItemsControl.ItemTemplate><DataTemplate>
+                            <Button Command="{Binding OpenCommand}" Style="{StaticResource DriveCategoryButton}" ToolTip="{services:Loc Drive.OpenCategoryTooltip}">
+                                <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="178"/><ColumnDefinition Width="*"/><ColumnDefinition Width="78"/><ColumnDefinition Width="72"/></Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center"><Ellipse Width="8" Height="8" Fill="{Binding Brush}" Margin="0,0,8,0"/><TextBlock Text="{Binding Name}" FontSize="12" TextTrimming="CharacterEllipsis"/></StackPanel>
+                                    <ProgressBar Grid.Column="1" Margin="12,0" Height="7" VerticalAlignment="Center" Value="{Binding Percent, Mode=OneWay}" Maximum="100" Foreground="{Binding Brush}" Style="{StaticResource FlatProgressBar}"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding PercentText}" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                    <TextBlock Grid.Column="3" Text="{Binding SizeText}" VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                </Grid>
+                            </Button>
+                        </DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+                    </StackPanel>
+                    <Grid Grid.Row="6">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="10"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <TextBlock Text="{services:Loc Drive.ScanHint}" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" Margin="0,0,20,0"/>
+                        <Button Grid.Column="1" Content="{services:Loc Drive.OpenExplorer}" Command="{Binding OpenSelectedDriveCommand}" Style="{StaticResource SecondaryButton}"/>
+                        <Button Grid.Column="3" Content="{services:Loc Drive.ScanDrive}" Command="{Binding ScanSelectedDriveCommand}" Style="{StaticResource PrimaryButton}"/>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+        </Grid>
+
+        <!-- Uninstaller residual review: only leftovers NODR can safely act on are shown. -->
+        <Grid Grid.RowSpan="2" Panel.ZIndex="90" Visibility="{Binding IsUninstallerResidualOpen, Converter={StaticResource BoolToVisibility}}">
+            <Border Background="{DynamicResource OverlayBrush}"/>
+            <Border Width="700" MaxWidth="760" MaxHeight="600" HorizontalAlignment="Center" VerticalAlignment="Center" Background="{DynamicResource ModalSurfaceBrush}" BorderBrush="{DynamicResource ModalBorderBrush}" BorderThickness="1" CornerRadius="12" Padding="24">
+                <Border.Effect><DropShadowEffect BlurRadius="28" ShadowDepth="0" Opacity="0.42" Color="#000000"/></Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="10"/><RowDefinition Height="Auto"/><RowDefinition Height="16"/><RowDefinition Height="*"/><RowDefinition Height="16"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <StackPanel><TextBlock Text="{Binding UninstallerResidualTitle}" FontSize="20" FontWeight="SemiBold"/><TextBlock Text="{Binding UninstallerResidualStatus}" Margin="0,6,20,0" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/></StackPanel>
+                        <Button Grid.Column="1" Content="&#xE711;" FontFamily="Segoe MDL2 Assets" Command="{Binding CloseUninstallerResidualsCommand}" Style="{StaticResource SecondaryButton}" Padding="10,8"/>
+                    </Grid>
+                    <Border Grid.Row="2" Background="{DynamicResource SurfaceHoverBrush}" CornerRadius="9" Padding="12">
+                        <StackPanel><TextBlock Text="{Binding UninstallerResidualSummary}" FontSize="12" FontWeight="SemiBold"/><TextBlock Text="{services:Loc Uninstaller.ResidualSafety}" Margin="0,5,0,0" FontSize="10.5" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/></StackPanel>
+                    </Border>
+                    <ScrollViewer Grid.Row="4" MaxHeight="350" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding UninstallerResiduals}"><ItemsControl.ItemTemplate><DataTemplate>
+                            <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="9" Padding="12" Margin="0,0,0,8">
+                                <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="10"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <CheckBox IsChecked="{Binding IsSelected}" IsEnabled="{Binding CanClean}" VerticalAlignment="Center"/>
+                                    <StackPanel Grid.Column="2"><StackPanel Orientation="Horizontal"><TextBlock Text="{Binding KindLabel}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}"/><TextBlock Text=" · " Foreground="{DynamicResource TextSecondaryBrush}"/><TextBlock Text="{Binding ConfidenceLabel}" FontSize="10.5" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}"/><TextBlock Text=" · " Foreground="{DynamicResource TextSecondaryBrush}"/><TextBlock Text="{Binding DetailText}" FontSize="10.5" Foreground="{DynamicResource TextSecondaryBrush}"/></StackPanel><TextBlock Text="{Binding Path}" Margin="0,5,12,0" FontSize="11.5" TextWrapping="Wrap"/></StackPanel>
+                                    <TextBlock Grid.Column="3" Text="{Binding SizeText}" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate></ItemsControl.ItemTemplate></ItemsControl>
+                    </ScrollViewer>
+                    <Grid Grid.Row="6">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="10"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <Button Content="{services:Loc Uninstaller.RescanResiduals}" Command="{Binding RescanUninstallerResidualsCommand}" Style="{StaticResource SecondaryButton}"/>
+                        <Button Grid.Column="2" Content="{services:Loc Common.Close}" Command="{Binding CloseUninstallerResidualsCommand}" Style="{StaticResource SecondaryButton}"/>
+                        <Button Grid.Column="4" Content="{services:Loc Uninstaller.CleanResiduals}" Command="{Binding CleanUninstallerResidualsCommand}" Style="{StaticResource DangerButton}"/>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- NODR custom modal overlay: all confirmations and in-app notices use this surface. -->
+        <Grid Grid.RowSpan="2" Panel.ZIndex="100" Visibility="{Binding IsDialogOpen, Converter={StaticResource BoolToVisibility}}">
+            <Border Background="{DynamicResource OverlayBrush}"/>
+            <Border Width="520" MaxWidth="620" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Background="{DynamicResource ModalSurfaceBrush}" BorderBrush="{DynamicResource ModalBorderBrush}" BorderThickness="1" CornerRadius="12" Padding="24">
+                <Border.Effect><DropShadowEffect BlurRadius="28" ShadowDepth="0" Opacity="0.42" Color="#000000"/></Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="22"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                    <TextBlock Text="{Binding DialogTitle}" FontSize="20" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}"/>
+                    <TextBlock Grid.Row="1" Text="{Binding DialogMessage}" Margin="0,10,0,0" FontSize="13" LineHeight="19" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap"/>
+                    <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="{services:Loc Common.Cancel}" Command="{Binding CancelDialogCommand}" Style="{StaticResource SecondaryButton}" Margin="0,0,10,0"
+                                Visibility="{Binding DialogShowCancel, Converter={StaticResource BoolToVisibility}}"/>
+                        <Button Content="{Binding DialogConfirmText}" Command="{Binding ConfirmDialogCommand}" Style="{StaticResource PrimaryButton}"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

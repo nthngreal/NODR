@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>NODR</AssemblyName>
+    <RootNamespace>NODR</RootNamespace>
+    <Version>1.14.15</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.14.15.0</FileVersion>
+    <Product>NODR</Product>
+    <Description>Safe, focused Windows PC utility for monitoring, cleanup, large-file discovery and safe app uninstall workflows.</Description>
+    <ApplicationIcon>Assets\NODR.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Page Update="Themes\NodrResources.xaml" />
+    <None Remove="Assets\NODR.ico" />
+    <Resource Include="Assets\NODR.ico" />
+    <Resource Include="Assets\NODR-logo.png" />
+    <Resource Include="Assets\NODR-wordmark-dark.png" />
+    <Resource Include="Assets\NODR-wordmark-light.png" />
+    <Resource Include="Assets\Ui\*.png" />
+    <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.6" />
+    <EmbeddedResource Include="Localization\uk.json" LogicalName="NODR.Localization.uk.json" />
+    <EmbeddedResource Include="Localization\en.json" LogicalName="NODR.Localization.en.json" />
+    <EmbeddedResource Include="Localization\ru.json" LogicalName="NODR.Localization.ru.json" />
+  </ItemGroup>
+</Project>

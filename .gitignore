@@ -1,0 +1,22 @@
+# .NET
+bin/
+obj/
+dist/
+*.user
+*.suo
+*.pdb
+*.cache
+
+# IDE
+.vs/
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Local logs / generated release output
+*.log
+artifacts/

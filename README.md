@@ -2,109 +2,122 @@
 
 **Cleaner. Faster. Freer.**
 
-NODR is a focused Windows utility for monitoring your PC, reclaiming disposable space, finding large files, and uninstalling applications without pretending to be a “magic optimizer.”
+NODR is a focused Windows utility for system monitoring, safe disk cleanup, large-file discovery, and controlled application removal — without “magic optimizer” features.
 
-> Built for Windows. Local-first. Conservative by design.
+> **Local-first. Transparent. Conservative by design.**
 
 <p align="center">
   <img src="Assets/screenshots/overview-dark.png" alt="NODR Overview in dark theme" width="860">
 </p>
 
-## What NODR does
+## Features
 
-### Overview
+### System Overview
 
-See CPU, GPU, RAM and storage information at a glance, check cleanup status, review system specs, and launch common maintenance tools.
+Monitor CPU, GPU, RAM, and storage usage at a glance, review system information, and access common maintenance tools.
 
-### Cleanup
+### Targeted Cleanup
 
 Scan disposable or recoverable data and choose exactly which categories to clean. Personal files are not included in cleanup scans.
 
 <p align="center">
-  <img src="Assets/screenshots/cleanup-dark.png" alt="NODR Cleanup" width="860">
+  <img src="Assets/screenshots/cleanup-dark.png" alt="NODR Cleanup in dark theme" width="860">
 </p>
 
-### Large files
+### Large File Finder
 
-Find files **100 MB or larger**, understand what is taking space, and decide what to remove. NODR does not automatically delete files found by the scanner.
+Find files **100 MB or larger**, understand what is consuming disk space, and decide what to remove. NODR never automatically deletes files found by the scanner.
 
 <p align="center">
-  <img src="Assets/screenshots/files-dark.png" alt="NODR large file finder" width="860">
+  <img src="Assets/screenshots/files-dark.png" alt="NODR Large File Finder in dark theme" width="860">
 </p>
 
-### Uninstaller
+### App Uninstaller
 
-Review installed applications, open their registered uninstallers, and clean only narrowly attributable leftovers after uninstall.
+Review installed applications, launch their registered uninstallers, and inspect narrowly attributable leftovers after uninstall.
 
 <p align="center">
-  <img src="Assets/screenshots/uninstaller-dark.png" alt="NODR Uninstaller" width="860">
+  <img src="Assets/screenshots/uninstaller-dark.png" alt="NODR Uninstaller in dark theme" width="860">
 </p>
 
-## Safety first
+## Safety & Privacy
 
-NODR deliberately avoids aggressive “optimizer” behavior.
+NODR is deliberately conservative:
 
-- No registry cleaner
-- No RAM cleaner
-- No Prefetch cleaner
-- No automatic deletion of personal files
-- Large-file scans do not delete anything automatically
-- User-file removal uses the Windows Recycle Bin where applicable
-- Reparse points, junctions and symlinks are not followed during file scans
-- Cleanup categories explain what is being removed
+- **No registry cleaner, RAM cleaner, or Prefetch cleaner**
+- **No automatic deletion of personal files**
+- User-file deletion uses the **Windows Recycle Bin** where applicable
+- Reparse points, junctions, and symbolic links are not followed during file scans
+- Cleanup categories clearly show what is selected before cleaning
+- File safety and residual classification use deterministic local rules
 
-## Light & dark
+## Themes & Languages
 
-NODR supports **System, Dark and Light** themes.
+NODR supports **System, Dark, and Light** themes.
 
 <p align="center">
   <img src="Assets/screenshots/overview-light.png" alt="NODR Overview in light theme" width="860">
 </p>
 
-The interface is available in **English, Ukrainian and Russian**. English is the default language.
+Available languages:
+
+- English (default)
+- Ukrainian
+- Russian
 
 ## Download
 
-Public Windows builds are distributed in two forms:
+Download the latest version from [**Releases**](../../releases).
 
-- **Setup** — branded Windows installer
+Two Windows x64 distributions are provided:
+
+- **Setup** — standard Windows installer
 - **Portable** — self-contained ZIP; extract it and run `NODR.exe`
 
-Downloads are published in the repository's **Releases** section.
+### Requirements
 
-## Requirements
+- Windows 10 / 11 x64
+- No separate .NET installation required for release builds
 
-- Windows 10/11 x64
-- Public builds are self-contained
-- .NET 10 SDK is required only when building from source
+## Building from Source
 
-## Build from source
+### Prerequisites
 
-Run:
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+- [Inno Setup 6](https://jrsoftware.org/isinfo.php) *(optional; required only for building Setup)*
+
+Clone the repository:
+
+```bash
+git clone https://github.com/nthngreal/NODR.git
+cd NODR
+```
+
+Run NODR:
 
 ```bat
 run.bat
 ```
 
-To create release packages:
+Build release packages:
 
 ```bat
 build-release.bat
 ```
 
-The release builder publishes a self-contained Windows x64 build and creates the portable ZIP. With Inno Setup 6.6+ installed, it also builds the branded Setup executable.
+The release builder creates a self-contained Windows x64 build and Portable ZIP. If Inno Setup is installed, it also creates the Setup executable.
 
-## Privacy
+## Third-Party Software
 
-NODR works locally. File and residual classification use deterministic local rules and do not depend on a cloud service.
+NODR uses [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor) for hardware sensor access.
 
-## Third-party software
+See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for licensing and attribution information.
 
-NODR uses `LibreHardwareMonitorLib` for hardware sensor access. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for redistribution notices and upstream licensing information.
+## Current Release
 
-## Current release
+**v1.14.15**
 
-**v1.14.15** — tested on Windows as both the portable build and installed build.
+Available as both Setup and Portable Windows x64 builds.
 
 ---
 

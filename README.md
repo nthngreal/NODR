@@ -7,7 +7,7 @@ NODR is a focused Windows utility for monitoring your PC, reclaiming disposable 
 > Built for Windows. Local-first. Conservative by design.
 
 <p align="center">
-  <img src="assets/screenshots/overview-dark.png" alt="NODR Overview in dark theme" width="860">
+  <img src="Assets/screenshots/overview-dark.png" alt="NODR Overview in dark theme" width="860">
 </p>
 
 ## What NODR does
@@ -21,7 +21,7 @@ See CPU, GPU, RAM and storage information at a glance, check cleanup status, rev
 Scan disposable or recoverable data and choose exactly which categories to clean. Personal files are not included in cleanup scans.
 
 <p align="center">
-  <img src="assets/screenshots/cleanup-dark.png" alt="NODR Cleanup" width="860">
+  <img src="Assets/screenshots/cleanup-dark.png" alt="NODR Cleanup" width="860">
 </p>
 
 ### Large files
@@ -29,7 +29,7 @@ Scan disposable or recoverable data and choose exactly which categories to clean
 Find files **100 MB or larger**, understand what is taking space, and decide what to remove. NODR does not automatically delete files found by the scanner.
 
 <p align="center">
-  <img src="assets/screenshots/files-dark.png" alt="NODR large file finder" width="860">
+  <img src="Assets/screenshots/files-dark.png" alt="NODR large file finder" width="860">
 </p>
 
 ### Uninstaller
@@ -37,7 +37,7 @@ Find files **100 MB or larger**, understand what is taking space, and decide wha
 Review installed applications, open their registered uninstallers, and clean only narrowly attributable leftovers after uninstall.
 
 <p align="center">
-  <img src="assets/screenshots/uninstaller-dark.png" alt="NODR Uninstaller" width="860">
+  <img src="Assets/screenshots/uninstaller-dark.png" alt="NODR Uninstaller" width="860">
 </p>
 
 ## Safety first
@@ -58,7 +58,7 @@ NODR deliberately avoids aggressive “optimizer” behavior.
 NODR supports **System, Dark and Light** themes.
 
 <p align="center">
-  <img src="assets/screenshots/overview-light.png" alt="NODR Overview in light theme" width="860">
+  <img src="Assets/screenshots/overview-light.png" alt="NODR Overview in light theme" width="860">
 </p>
 
 The interface is available in **English, Ukrainian and Russian**. English is the default language.
